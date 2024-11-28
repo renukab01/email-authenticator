@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+python-redmine
+pydantic[email]
+python-multipart
+aiosmtplib
+redis>=5.0.1
