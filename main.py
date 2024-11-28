@@ -102,8 +102,8 @@ async def send_otp(email_request: EmailRequest):
 
     store_in_redis(otp,email)
 
-    # if not await send_email(email, otp):
-    #     raise HTTPException(status_code=500, detail="Failed to send OTP")
+    if not await send_email(email, otp):
+        raise HTTPException(status_code=500, detail="Failed to send OTP")
     
     return {"message": "OTP sent successfully", "otp":otp}
 
