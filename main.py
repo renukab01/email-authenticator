@@ -56,9 +56,7 @@ def generate_otp() -> str:
     return str(random.randint(100000, 999999))
 
 def verify_email(email) -> bool:
-    users = redmine.group.get(350, include=['users']).users
-    user_emails = [redmine.user.get(user.id).mail for user in users]
-    return email in user_emails
+    return email in [u.mail for u in redmine.user.filter(group_id=350)]
 
 def store_in_redis(otp, email):
     key = f"otp:{email}"
@@ -105,7 +103,7 @@ async def send_otp(email_request: EmailRequest):
     if not await send_email(email, otp):
         raise HTTPException(status_code=500, detail="Failed to send OTP")
     
-    return {"message": "OTP sent successfully", "otp":otp}
+    return {"message": "OTP sent successfully"}
 
 @app.post("/verify-otp/")
 async def verify_otp(verification: OTPVerification):
