@@ -68,18 +68,18 @@ def store_in_redis(otp, email):
 
 async def send_email(to_email: str, otp: str) -> bool:
     """Send OTP via email asynchronously"""
+    smtp = None
     try:
         message = MIMEMultipart()
-        message["From"] = SMTP_USERNAME
+        message["From"] = "noreply@tekdi.net"
         message["To"] = to_email
         message["Subject"] = "Your OTP for Email Verification for Tekdi HR Bot"
         
         body = f"Your OTP is {otp}\nThis OTP is valid for 5 minutes."
         message.attach(MIMEText(body, "plain"))
 
-        smtp = aiosmtplib.SMTP(hostname=SMTP_SERVER, port=SMTP_PORT, use_tls=False)
+        smtp = aiosmtplib.SMTP(hostname=SMTP_SERVER, port=SMTP_PORT, use_tls=False, start_tls=True)
         await smtp.connect()
-        await smtp.starttls()
         await smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
         
         await smtp.send_message(message)
