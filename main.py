@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 import aiosmtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -45,10 +45,10 @@ async def startup_event():
         raise Exception("Could not connect to Redis")
 
 class EmailRequest(BaseModel):
-    email: EmailStr
+    email: str
 
 class OTPVerification(BaseModel):
-    email: EmailStr
+    email: str
     otp: str
 
 def generate_otp() -> str:
