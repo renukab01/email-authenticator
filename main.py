@@ -103,7 +103,7 @@ async def send_otp(email_request: EmailRequest):
     if not await send_email(email, otp):
         raise HTTPException(status_code=500, detail="Failed to send OTP")
     
-    return {"detail": "OTP sent successfully"}
+    return {"message": "OTP sent successfully"}
 
 @app.post("/verify-otp/")
 async def verify_otp(verification: OTPVerification):
@@ -115,7 +115,7 @@ async def verify_otp(verification: OTPVerification):
     key = f"otp:{email}"
     stored_data = redis_client.hgetall(key)
     if not stored_data:
-        raise HTTPException(status_code=400, detail="OTP has expired")
+        raise HTTPException(status_code=400, detail="No OTP found for this email")
     
     stored_otp = stored_data["otp"]
     timestamp = float(stored_data["timestamp"])
@@ -130,7 +130,7 @@ async def verify_otp(verification: OTPVerification):
     redis_client.delete(key)
     
     return {
-        "detail": "Email verified successfully",
+        "message": "Email verified successfully",
         "email": email
     }
 
